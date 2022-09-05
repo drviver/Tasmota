@@ -112,6 +112,9 @@
                                                  // this is not required.  The rate that the sensor is read is defined by TELE_PERIOD
                                                  // If not using the sensor then you can supply process values via MQTT using
                                                  // cmnd PidPv
+                                                 
+   #define PID_USE_LOCAL_SENSOR_TOF              // If defined then the local tof distance sensor will be used for pv. Leave undefined if
+                                                 // this is not required.
 
    #define PID_SHUTTER                   1       // if using the PID to control a 3-way valve, create Tasmota Shutter and define the
                                                  // number of the shutter here. Otherwise leave this commented out
@@ -239,8 +242,13 @@ void PIDShowSensor() {
   // Called each time new sensor data available, data in mqtt data in same format
   // as published in tele/SENSOR
   // Update period is specified in TELE_PERIOD
+  #ifdef PID_USE_LOCAL_SENSOR_TOF
+  if (!isnan(TasmotaGlobal.tof_distance)) {
+    const float temperature = TasmotaGlobal.tof_distance;
+  #else
   if (!isnan(TasmotaGlobal.temperature_celsius)) {
     const float temperature = TasmotaGlobal.temperature_celsius;
+  #endif
 
     // pass the value to the pid alogorithm to use as current pv
     Pid.last_pv_update_secs = Pid.current_time_secs;
