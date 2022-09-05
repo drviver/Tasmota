@@ -127,6 +127,9 @@
  * This is directed towards using the algorithm in the node-red node node-red-contrib-pid but the algorithm here is based on
  * the code there and the tuning technique described there should work just the same.
 \*********************************************************************************************/
+#ifndef USE_VL53L0X
+#undef PID_USE_LOCAL_SENSOR_TOF
+#endif
 
 #ifndef PID_SETPOINT
 #define PID_SETPOINT                  19.5    // [PidSp] Setpoint value.
