@@ -255,6 +255,9 @@ struct TasmotaGlobal_t {
   float temperature_celsius;                // Provide a global temperature to be used by some sensors
   float humidity;                           // Provide a global humidity to be used by some sensors
   float pressure_hpa;                       // Provide a global pressure to be used by some sensors
+#ifdef USE_VL53L0X
+  uint16_t tof_distance;
+#endif
 
   uint16_t gpio_pin[MAX_GPIO_PIN];          // GPIO functions indexed by pin number
   myio my_module;                           // Active copy of Module GPIOs (17 x 16 bits)
