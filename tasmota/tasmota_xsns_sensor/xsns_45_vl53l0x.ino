@@ -181,6 +181,7 @@ void Vl53l0Every_250MSecond(void) {
 #else
         Vl53l0x_data[i].distance = dist;
 #endif
+        TasmotaGlobal.tof_distance=Vl53l0x_data[0].distance;
     }
     if (!VL53L0X_xshut) { break; }
   }
