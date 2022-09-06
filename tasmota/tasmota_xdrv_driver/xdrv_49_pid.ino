@@ -134,7 +134,7 @@
 #endif
 
 #ifndef PID_SETPOINT
-#define PID_SETPOINT                  19.5    // [PidSp] Setpoint value.
+#define PID_SETPOINT                  200    // [PidSp] Setpoint value.
 #endif
 #ifndef PID_PROPBAND
 #define PID_PROPBAND                  5       // [PidPb] Proportional band in process units (eg degrees).
@@ -398,6 +398,10 @@ void PIDShowValues(void) {
   i_buf = Pid.pid.getMaxInterval();
   ResponseAppend_P(PSTR("\"PidMaxInterval\":%d,"), i_buf);
 
+  // #define D_CMND_PID_SETMAX_INTERVAL "MaxInterval"
+  i_buf = Pid.pid.getDirection();
+  ResponseAppend_P(PSTR("\"PidDirection\":%d,"), i_buf);
+
 // #define D_CMND_PID_SETUPDATE_SECS "UpdateSecs"
   ResponseAppend_P(PSTR("\"PidUpdateSecs\":%d,"), Pid.update_secs);
 #endif // PID_REPORT_MORE_SETTINGS
@@ -430,17 +434,17 @@ void PIDRun(void) {
   {
     if(Pid.pid.getDirection()<0)
     {
-    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF, SRC_IGNORE);
-    ExecuteCommandPower(PID_RELAY_UP, POWER_ON, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF_NO_STATE, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_ON, SRC_IGNORE);
     }
     else
     {
-    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF, SRC_IGNORE);
-    ExecuteCommandPower(PID_RELAY_DOWN, POWER_ON, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF_NO_STATE, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_UP, POWER_ON, SRC_IGNORE);
     }
   }else{
-    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF, SRC_IGNORE);
-    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF_NO_STATE, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF_NO_STATE, SRC_IGNORE);
   }
 #endif //PID_USE_RELAYS
 
