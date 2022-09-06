@@ -39,6 +39,7 @@ void PID::initialise( double setpoint, double prop_band, double t_integral, doub
   m_smooth_factor= smooth_factor;
   m_mode_auto= mode_auto;
   m_manual_op = manual_op;
+  m_direction = 1;
 
   m_initialised = 1;
 
@@ -116,6 +117,11 @@ double PID::tick( unsigned long nowSecs ) {
       }
 
       double proportional = m_pv - m_setpoint;
+      if(proportional<0)
+        m_direction=-1;
+      else
+        m_direction=1;
+
       if (m_prop_band == 0) {
         // prop band is zero so drop back to on/off control with zero hysteresis
         if (proportional > 0.0) {
@@ -195,6 +201,10 @@ void PID::setMaxInterval( int max_interval ) {
 
 double PID::getPv() {
   return(m_pv);
+}
+
+int PID::getDirection() {
+  return(m_direction);
 }
 
 double PID::getSp() {

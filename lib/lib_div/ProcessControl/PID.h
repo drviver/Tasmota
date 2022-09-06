@@ -75,6 +75,7 @@ public:
   unsigned char getAuto();
   double getManualPower();
   int getMaxInterval();
+  int getDirection();
 
 private:
   double m_pv;
@@ -88,6 +89,7 @@ private:
   double m_manual_op;
   int m_max_interval;
   double m_last_power;
+  int m_direction;
 
 
   unsigned char m_initialised;

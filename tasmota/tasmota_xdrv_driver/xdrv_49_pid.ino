@@ -121,7 +121,9 @@
 
    #define PID_REPORT_MORE_SETTINGS    true      // If defined to true, the SENSOR output will provide more extensive json
                                                  // output in the PID section. Override to false to reduce json output
-
+   #define PID_USE_RELAYS 1
+   #define PID_RELAY_UP 1
+   #define PID_RELAY_DOWN 2
  * Help with using the PID algorithm and with loop tuning can be found at
  * http://blog.clanlaw.org.uk/2018/01/09/PID-tuning-with-node-red-contrib-pid.html
  * This is directed towards using the algorithm in the node-red node node-red-contrib-pid but the algorithm here is based on
@@ -171,6 +173,12 @@
 #define PID_REPORT_MORE_SETTINGS     true     // Override to false if less details are required in SENSOR JSON
 #endif
 
+#ifndef PID_RELAY_UP
+#define PID_RELAY_UP 1
+#endif
+#ifndef PID_RELAY_DOWN
+#define PID_RELAY_DOWN 2
+#endif
 #include "PID.h"
 
 /* This might need to go to i18n.h */
@@ -412,6 +420,30 @@ void PIDRun(void) {
   Response_P(PSTR("{\"%s\":\"%s\"}"), "power", str_buf);
   MqttPublishPrefixTopicRulesProcess_P(TELE, "PID");
 #endif // PID_DONT_USE_PID_TOPIC
+
+
+#if defined PID_USE_RELAYS
+  // send output as a position from 0-100 to defined shutter
+  //int pos = power * 100;
+  //ShutterSetPosition(PID_SHUTTER, pos);
+  if(power>0)
+  {
+    if(Pid.pid.getDirection()<0)
+    {
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_UP, POWER_ON, SRC_IGNORE);
+    }
+    else
+    {
+    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_ON, SRC_IGNORE);
+    }
+  }else{
+    ExecuteCommandPower(PID_RELAY_UP, POWER_OFF, SRC_IGNORE);
+    ExecuteCommandPower(PID_RELAY_DOWN, POWER_OFF, SRC_IGNORE);
+  }
+#endif //PID_USE_RELAYS
+
 
 #if defined PID_SHUTTER
   // send output as a position from 0-100 to defined shutter
